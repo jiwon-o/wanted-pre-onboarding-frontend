@@ -1,10 +1,14 @@
-import React, { useRef, useState } from "react";
-import { postCreateTodo } from "../api/todoApi";
+import React, { useEffect, useRef, useState } from "react";
+import { postCreateTodo, getGetTodo } from "../api/todoApi";
 
 export default function Todo() {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    getTodoList();
+  });
 
   const handleNewTodoChange = (e) => {
     setNewTodo(e.target.value);
@@ -32,6 +36,17 @@ export default function Todo() {
       setTodos([...todos, newTodoItem]);
       setNewTodo("");
       inputRef.current.focus();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getTodoList = async () => {
+    try {
+      const response = await getGetTodo();
+      console.log(response);
+
+      setTodos(response);
     } catch (error) {
       console.error(error);
     }
