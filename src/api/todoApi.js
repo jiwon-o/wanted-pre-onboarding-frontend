@@ -17,6 +17,5 @@ export const putUpdateTodo = async (id, data) => {
 
 export const deleteTodo = async (id) => {
   const response = await accessInstance.delete(`/todos/${id}`);
-  console.log(response);
   return response.data;
 };
