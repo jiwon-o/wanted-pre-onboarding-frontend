@@ -56,6 +56,11 @@ const SignUpButton = styled.button`
   color: white;
   font-size: 18px;
   margin-bottom: 20px;
+
+  &:disabled {
+    background-color: var(--color-border);
+    cursor: default;
+  }
 `;
 
 const Login = styled.div`
@@ -67,9 +72,19 @@ const LoginButton = styled(Link)`
   color: #767676;
 `;
 
+const StyledText = styled.p`
+  display: block;
+  color: red;
+  font-size: 12px;
+  margin-top: -12px;
+  margin-bottom: 20px;
+`;
+
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [isValidPassword, setIsValidPassword] = useState(true);
 
   const navigate = useNavigate();
 
@@ -77,10 +92,25 @@ export default function SignUp() {
     e.preventDefault();
     try {
       postSignUp({ email, password });
+      alert("성공적으로 회원가입 되었습니다.");
       navigate("/signin");
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 400) {
+        alert("이미 가입된 이메일입니다.");
+      } else {
+        console.error(error);
+      }
     }
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    setIsValidEmail(e.target.value === "" || e.target.value.includes("@"));
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    setIsValidPassword(e.target.value === "" || e.target.value.length >= 8);
   };
 
   return (
@@ -96,17 +126,34 @@ export default function SignUp() {
             type="email"
             data-testid="email-input"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleEmailChange}
           />
+          {!isValidEmail && email !== "" && (
+            <StyledText className="error-message">
+              유효한 이메일을 입력하세요.
+            </StyledText>
+          )}
           <InputLabel htmlFor="inpPw">비밀번호 입력</InputLabel>
           <StyledInput
             id="inpPw"
             type="password"
             data-testid="password-input"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handlePasswordChange}
           />
-          <SignUpButton type="button" data-testid="signup-button">
+          {!isValidPassword && password !== "" && (
+            <StyledText className="error-message">
+              비밀번호는 8자 이상 입력하세요.
+            </StyledText>
+          )}
+          <SignUpButton
+            data-testid="signup-button"
+            disabled={
+              email === "" ||
+              password === "" ||
+              !isValidEmail ||
+              !isValidPassword
+            }>
             회원가입
           </SignUpButton>
           <Login>
