@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { postCreateTodo } from "../api/todoApi";
 
 export default function Todo() {
   const [todos, setTodos] = useState([]);
@@ -9,15 +10,31 @@ export default function Todo() {
     setNewTodo(e.target.value);
   };
 
-  const handleNewTodoAdd = () => {
+  const handleNewTodoAdd = async () => {
     if (newTodo.trim() === "") {
       setNewTodo("");
       inputRef.current.focus();
       return;
     }
-    setTodos([...todos, { text: newTodo, isCompleted: false }]);
-    setNewTodo("");
-    inputRef.current.focus();
+
+    try {
+      const data = { todo: newTodo };
+      const response = await postCreateTodo(data);
+      console.log(response);
+
+      const newTodoItem = {
+        id: response.id,
+        todo: response.todo,
+        isCompleted: response.isCompleted,
+        userId: response.userId,
+      };
+
+      setTodos([...todos, newTodoItem]);
+      setNewTodo("");
+      inputRef.current.focus();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -34,11 +51,11 @@ export default function Todo() {
         추가
       </button>
       <ul>
-        {todos.map((todo, index) => (
+        {todos.map((todoItem, index) => (
           <li key={index}>
             <label>
               <input type="checkbox" />
-              <span>{todo.text}</span>
+              <span>{todoItem.todo}</span>
             </label>
           </li>
         ))}
