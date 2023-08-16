@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { postCreateTodo, getGetTodo, putUpdateTodo } from "../api/todoApi";
+import {
+  postCreateTodo,
+  getTodo,
+  putUpdateTodo,
+  deleteTodo,
+} from "../api/todoApi";
 
 export default function Todo() {
   const [todos, setTodos] = useState([]);
@@ -67,6 +72,16 @@ export default function Todo() {
     }
   };
 
+  const handleTodoDelete = async (id) => {
+    try {
+      await deleteTodo(id);
+      const updatedTodos = todos.filter((todoItem) => todoItem.id !== id);
+      setTodos(updatedTodos);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleStartEditing = (id, todo) => {
     setEditingTodoId(id);
     setEditingTodo(todo);
@@ -79,7 +94,7 @@ export default function Todo() {
 
   const getTodoList = async () => {
     try {
-      const response = await getGetTodo();
+      const response = await getTodo();
 
       setTodos(response);
     } catch (error) {
@@ -109,8 +124,10 @@ export default function Todo() {
                   type="text"
                   value={editingTodo}
                   onChange={(e) => setEditingTodo(e.target.value)}
+                  data-testid="modify-input"
                 />
                 <button
+                  data-testid="submit-button"
                   onClick={() =>
                     handleTodoUpdate(
                       todoItem.id,
@@ -120,7 +137,11 @@ export default function Todo() {
                   }>
                   제출
                 </button>
-                <button onClick={handleCancelEditing}>취소</button>
+                <button
+                  data-testid="cancel-button"
+                  onClick={handleCancelEditing}>
+                  취소
+                </button>
               </>
             ) : (
               <>
@@ -139,12 +160,17 @@ export default function Todo() {
                   <span>{todoItem.todo}</span>
                 </label>
                 <button
+                  data-testid="modify-button"
                   onClick={() =>
                     handleStartEditing(todoItem.id, todoItem.todo)
                   }>
                   수정
                 </button>
-                <button>삭제</button>
+                <button
+                  data-testid="delete-button"
+                  onClick={() => handleTodoDelete(todoItem.id)}>
+                  삭제
+                </button>
               </>
             )}
           </li>

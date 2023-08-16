@@ -5,13 +5,18 @@ export const postCreateTodo = async (data) => {
   return response.data;
 };
 
-export const getGetTodo = async (data) => {
+export const getTodo = async (data) => {
   const response = await accessInstance.get(`/todos`, data);
   return response.data;
 };
 
 export const putUpdateTodo = async (id, data) => {
   const response = await accessInstance.put(`/todos/${id}`, data);
+  return response.data;
+};
+
+export const deleteTodo = async (id) => {
+  const response = await accessInstance.delete(`/todos/${id}`);
   console.log(response);
   return response.data;
 };
