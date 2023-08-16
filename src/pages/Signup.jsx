@@ -80,7 +80,7 @@ const StyledText = styled.p`
   margin-bottom: 20px;
 `;
 
-export default function SignUp() {
+export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(true);
