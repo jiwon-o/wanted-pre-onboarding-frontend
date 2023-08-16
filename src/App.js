@@ -1,19 +1,23 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Main from "./pages/Main";
-import Signup from "./pages/Signup";
-import Signin from "./pages/Signin";
+import Home from "./pages/Home";
+import SignUp from "./pages/SignUp";
+import SignIn from "./pages/SignIn";
+import Todo from "./pages/Todo";
+import GlobalStyle from "./styles/GlobalStyle";
 
 function App() {
   return (
-    <div>
+    <>
+      <GlobalStyle />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Main />}></Route>
-          <Route path="/signup" element={<Signup />}></Route>
-          <Route path="/signin" element={<Signin />}></Route>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/signup" element={<SignUp />}></Route>
+          <Route path="/signin" element={<SignIn />}></Route>
+          <Route path="/todo" element={<Todo />}></Route>
         </Routes>
       </BrowserRouter>
-    </div>
+    </>
   );
 }
 export default App;
