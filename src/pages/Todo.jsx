@@ -4,6 +4,8 @@ import { postCreateTodo, getGetTodo, putUpdateTodo } from "../api/todoApi";
 export default function Todo() {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
+  const [editingTodoId, setEditingTodoId] = useState(null);
+  const [editingTodo, setEditingTodo] = useState("");
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -59,9 +61,20 @@ export default function Todo() {
         return todoItem;
       });
       setTodos(updatedTodos);
+      handleCancelEditing();
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleStartEditing = (id, todo) => {
+    setEditingTodoId(id);
+    setEditingTodo(todo);
+  };
+
+  const handleCancelEditing = () => {
+    setEditingTodoId(null);
+    setEditingTodo("");
   };
 
   const getTodoList = async () => {
@@ -90,20 +103,50 @@ export default function Todo() {
       <ul>
         {todos.map((todoItem) => (
           <li key={todoItem.id}>
-            <label>
-              <input
-                type="checkbox"
-                checked={todoItem.isCompleted}
-                onChange={() =>
-                  handleTodoUpdate(
-                    todoItem.id,
-                    todoItem.todo,
-                    !todoItem.isCompleted
-                  )
-                }
-              />
-              <span>{todoItem.todo}</span>
-            </label>
+            {editingTodoId === todoItem.id ? (
+              <>
+                <input
+                  type="text"
+                  value={editingTodo}
+                  onChange={(e) => setEditingTodo(e.target.value)}
+                />
+                <button
+                  onClick={() =>
+                    handleTodoUpdate(
+                      todoItem.id,
+                      editingTodo,
+                      todoItem.isCompleted
+                    )
+                  }>
+                  제출
+                </button>
+                <button onClick={handleCancelEditing}>취소</button>
+              </>
+            ) : (
+              <>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={todoItem.isCompleted}
+                    onChange={() =>
+                      handleTodoUpdate(
+                        todoItem.id,
+                        todoItem.todo,
+                        !todoItem.isCompleted
+                      )
+                    }
+                  />
+                  <span>{todoItem.todo}</span>
+                </label>
+                <button
+                  onClick={() =>
+                    handleStartEditing(todoItem.id, todoItem.todo)
+                  }>
+                  수정
+                </button>
+                <button>삭제</button>
+              </>
+            )}
           </li>
         ))}
       </ul>
