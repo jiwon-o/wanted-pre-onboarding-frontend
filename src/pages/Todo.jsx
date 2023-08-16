@@ -133,7 +133,7 @@ export default function Todo() {
 
   const handleTodoUpdate = async (id, updatedTodo, updatedIsCompleted) => {
     try {
-      const response = await putUpdateTodo(id, {
+      await putUpdateTodo(id, {
         todo: updatedTodo,
         isCompleted: updatedIsCompleted,
       });
