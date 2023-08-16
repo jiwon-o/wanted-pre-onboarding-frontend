@@ -147,6 +147,7 @@ export default function SignUp() {
             </StyledText>
           )}
           <SignUpButton
+            type="submit"
             data-testid="signup-button"
             disabled={
               email === "" ||
